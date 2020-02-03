@@ -15,7 +15,7 @@ class CreateRecursosTable extends Migration
     {
         Schema::create('recursos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('identificador')->nullable();
+            $table->integer('dspace_id')->nullable();
             $table->string('title')->nullable();
             $table->json('contributor')->nullable();
             $table->string('subject')->nullable();
