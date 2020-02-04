@@ -44,51 +44,76 @@ trait DSpace
         if ($tipo=='m') {
             foreach ($data->record as $key => $node) {
                 $data = $node->metadata->children('oai_dc', 1)->dc->children('dc', 1);
+                $setSpec = $node->header->setSpec;
+                $procesar = true;
                 $date = $data->date[0];
                 $date = str_replace('T',' ', $date);
                 $date = str_replace('Z','', $date);
                 $carbon = Carbon::createFromFormat('Y-m-d H:i:s', $date)->toDateTimeString();
                 $now = new Carbon();
-                
+
                 $titulo = ($data->title[1]=='') ? $data->title[0] : $data->title[1] ;
-                
+
                 foreach ($data->identifier as $key => $item) {
-                    $texto = (string)$item;
-                    $sw = Str::contains($texto, 'http://hdl.handle.net');
-                    if ($sw) {
-                        $identifier = $item;
-                        $tmp = explode('/',$item);
-                        $dspace_id = $tmp[4];
-                    break;
-                }else{
-                    $identifier = '';
+                        $texto = (string)$item;
+                        $sw = Str::contains($texto, 'http://hdl.handle.net');
+                        if ($sw) {
+                            $identifier = $item;
+                            $tmp = explode('/',$item);
+                            $dspace_id = $tmp[4];
+                            break;
+                        }else{
+                            $identifier = '';
+                        }
                 }
+                $communities = [];
+                $collections = [];
+                foreach ($setSpec as $key => $set) {
+                    $texto = (string)$set;
+                    if (substr($texto,0,3)=='com') {
+                        $texto = $this->ComCol($texto);
+                        if ($texto) {
+                            array_push($communities,$texto);
+                        }
+                    } else {
+                        $texto = $this->ComCol($texto);
+                        if ($texto) {
+                            array_push($collections,$texto);
+                        }
+                    }
+                }
+                if (empty($collections)) {
+                    $procesar = false;
+                }
+                if ($data->contributor) {
+                    $contributor = $data->contributor;
+                }elseif($data->creator){
+                    $contributor = $data->creator;
+                } else {
+                    $contributor = '';
+                }
+
+                Recursos::create([
+                    'title'=>$titulo,
+                    'dspace_id'=>$dspace_id,
+                    'contributor'=>json_encode($contributor),
+                    'communities'=>json_encode($communities),
+                    'collections'=>json_encode($collections),
+                    'subject'=>$data->subject[0],
+                    'description'=>$data->description[0],
+                    'date'=>$carbon,
+                    'year'=>substr($carbon,0,4),
+                    'identifier'=>$identifier,
+                    'language'=>$data->language[0],
+                    'rights'=>$data->rights[1],
+                    'format'=>$data->format[2],
+                    'publisher'=>$data->publisher[0],
+                    'created_at'=>$now,
+                    'updated_at'=>$now,
+                    'procesar'=>$procesar,
+                    ]);
             }
-            if ($data->contributor) {
-                $contributor = $data->contributor;
-            }elseif($data->creator){
-                $contributor = $data->creator;
-            } else {
-                $contributor = '';
-            }
-            
-            Recursos::create([
-                'title'=>$titulo,
-                'dspace_id'=>$dspace_id,
-                'contributor'=>json_encode($contributor),
-                'subject'=>$data->subject[0],
-                'description'=>$data->description[0],
-                'date'=>$carbon,
-                'year'=>substr($carbon,0,4),
-                'identifier'=>$identifier,
-                'language'=>$data->language[0],
-                'rights'=>$data->rights[1],
-                'format'=>$data->format[2],
-                'publisher'=>$data->publisher[0],
-                'created_at'=>$now,
-                'updated_at'=>$now,
-                ]);
-            }
+        
         } else {
             foreach ($data->record as $key => $node) {
                 $data = $node->metadata->children('atom', 1)->entry->children('atom', 1);
@@ -119,24 +144,24 @@ trait DSpace
                     if (Str::contains($texto, $tipo)) {
                         $img = $texto;
                     break;
-                } else {
-                    $img = '';
+                    } else {
+                        $img = '';
+                    }
                 }
-            }
-            $now = new Carbon();
-            $peso = $file_size/1048576;
-            $peso = round($peso,2);
-            RecursosDetalles::create([
-                'title'=>$titulo,
-                'dspace_id'=>$dspace_id,
-                'file_name'=>$file_name,
-                'file_link'=>$file_link,
-                'file_size'=>"{$peso} Mb",
-                'img'=>$img,
-                'created_at'=>$now,
-                'updated_at'=>$now,
-                ]);
-            }
+                $now = new Carbon();
+                $peso = $file_size/1048576;
+                $peso = round($peso,2);
+                RecursosDetalles::create([
+                    'title'=>$titulo,
+                    'dspace_id'=>$dspace_id,
+                    'file_name'=>$file_name,
+                    'file_link'=>$file_link,
+                    'file_size'=>"{$peso} Mb",
+                    'img'=>$img,
+                    'created_at'=>$now,
+                    'updated_at'=>$now,
+                    ]);
+                }
         }
 
     }
@@ -169,6 +194,39 @@ trait DSpace
             'maestro' => $urls,
             'detalle' => $ore,
         ];
+    }
+    public function ComCol($valor)
+    {
+        $agricultura = ['320274','320565','320275','333479','320290','320291','320280','320292','313788','320276','320262','320277','320578','320586','313770','320587','320579','320580','320581','320582','320588','317695','317025'];
+        $construccion = ['320281','320293','320557','320558','320559','320571','320560'];
+        $desastres = ['320562','313768','320563','320575','320564'];
+        $alimentos = ['320590','320585','320591','620314','320592','320606','320607','320593','320594','320608','320595','320596','320597','320598'];
+        $ganaderia = ['320609','320599','320600','620315'];
+        $industrias = ['320602','620316','320603','320604','320610','320605','320612'];
+        $residuos = ['320630','320631','320620','620318'];
+        $agua = ['320632','320633','320635','620319','320622','320623','320638'];
+
+        if (Str::contains($valor, $agricultura)) {
+            $translate = 'Agricultura y bosques';
+        }elseif (Str::contains($valor, $construccion)) {
+            $translate = 'Construcción';
+        }elseif (Str::contains($valor, $desastres)) {
+            $translate = 'Reducción de riesgo de desastres';
+        }elseif (Str::contains($valor, $alimentos)) {
+            $translate = 'Procesamiento de alimentos';
+        }elseif (Str::contains($valor, $ganaderia)) {
+            $translate = 'Ganadería';
+        }elseif (Str::contains($valor, $industrias)) {
+            $translate = 'Industrias de Manufactura, Artesanía y Procesos';
+        }elseif (Str::contains($valor, $residuos)) {
+            $translate = 'Gestión de residuos';
+        }elseif (Str::contains($valor, $agua)) {
+            $translate = 'Agua y saneamiento';
+        } else {
+            $translate = false;
+        }
+
+        return $translate;
     }
 
 }

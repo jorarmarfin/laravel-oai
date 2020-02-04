@@ -18,6 +18,8 @@ class CreateRecursosTable extends Migration
             $table->integer('dspace_id')->nullable();
             $table->string('title')->nullable();
             $table->json('contributor')->nullable();
+            $table->json('communities')->nullable();
+            $table->json('collections')->nullable();
             $table->string('subject')->nullable();
             $table->mediumText('description')->nullable();
             $table->date('date')->nullable();
@@ -27,6 +29,7 @@ class CreateRecursosTable extends Migration
             $table->string('rights')->nullable();
             $table->string('format')->nullable();
             $table->string('publisher')->nullable();
+            $table->boolean('procesar')->nullable();
             $table->timestamps();
         });
     }
