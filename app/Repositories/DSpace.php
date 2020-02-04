@@ -105,7 +105,7 @@ trait DSpace
                     'year'=>substr($carbon,0,4),
                     'identifier'=>$identifier,
                     'language'=>$data->language[0],
-                    'rights'=>$data->rights[1],
+                    'rights'=>json_encode($data->rights),
                     'format'=>$data->format[2],
                     'publisher'=>$data->publisher[0],
                     'created_at'=>$now,

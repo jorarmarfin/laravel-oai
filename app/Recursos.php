@@ -21,7 +21,7 @@ class Recursos extends Model
     {
         $data = [];
         foreach (json_decode($this->contributor) as $key => $value) {
-            $data[$key]= ['tag'=>$value];
+            $data[$key]= ['name'=>$value];
         }
         return $data;
     }
@@ -33,15 +33,13 @@ class Recursos extends Model
         }
         return $data;
     }
-    public function getPublicadoresAttribute()
+    public function getDerechosAttribute()
     {
-        $p = '';
-        foreach (json_decode($this->contributor) as $key => $value) {
-            $p .= $value.',';
+        $data = [];
+        foreach (json_decode($this->rights) as $key => $value) {
+            $data[$key]= ['right'=>$value];
         }
-        $p = substr($p, 0, -1);
-
-        return $p;
+        return $data;
     }
     public function getDetallesAttribute()
     {

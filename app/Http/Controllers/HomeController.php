@@ -21,12 +21,10 @@ class HomeController extends Controller
             'dspace_asset_status'=> "publish",
             'dspace_asset_abstract'=> $recursos->description,
             'dspace_asset_uri'=> $recursos->identifier,
-            'dspace_asset_authors'=> [
-                $recursos->autores
-            ],
+            'dspace_asset_authors'=> $recursos->autores,
             'dspace_asset_issue_date'=> $recursos->fecha,
             'dspace_asset_oai_identifier'=> $recursos->identifier,
-            'dspace_asset_publisher'=> $recursos->publicadores,
+            'dspace_asset_publisher'=> $recursos->publisher,
             'dspace_asset_downloads'=>[
                 [
                 'name'=>$recursos->detalles->file_name,
@@ -37,13 +35,9 @@ class HomeController extends Controller
                 'download'=>$recursos->detalles->file_link,
                 ]
             ],
-            'dspace_asset_rights'=>[
-                [
-                    'tag'=>$recursos->rights
-                ]
-            ],
+            'dspace_asset_rights'=>$recursos->Derechos,
             "dspace_asset_externallinks"=>[
-                ['tag'=>$recursos->identifier]
+                ['link'=>$recursos->identifier]
             ],
             'dspace_asset_urls'=>[],
             'dspace_asset_collections'=>$recursos->colecciones,
@@ -57,8 +51,6 @@ class HomeController extends Controller
                 ['tag'=>$recursos->language]
             ]
         ];
-        //dd($data);
-        //echo json_encode($data);
 
         $sembrar = $this->Sembrar($data);
         return $sembrar;
