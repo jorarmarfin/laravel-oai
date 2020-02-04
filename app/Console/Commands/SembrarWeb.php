@@ -12,7 +12,7 @@ class SembrarWeb extends Command
      *
      * @var string
      */
-    protected $signature = 'practical:sembrar';
+    protected $signature = 'practical:sembrar {--p=}';
 
     /**
      * The console insert data inportal web.
@@ -41,6 +41,8 @@ class SembrarWeb extends Command
      */
     public function handle()
     {
-        $this->homecontroller->sembrando();
+        
+        if ($this->option('p')) $this->homecontroller->sembrando($this->option('p'));
+        else $this->homecontroller->sembrando();
     }
 }

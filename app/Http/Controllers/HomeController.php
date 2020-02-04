@@ -9,9 +9,13 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     use DSpace;
-    public function sembrando()
+    public function sembrando($id=null)
     {
-        $recursos = Recursos::where('procesar',1)->where('id','41')->first();
+        if (isset($id)) {
+            $recursos = Recursos::where('id',$id)->first();
+        } else {
+            $recursos = Recursos::where('procesar',1)->get();
+        }
         $data = [
             'dspace_asset_title'=> $recursos->title,
             'dspace_asset_status'=> "publish",
