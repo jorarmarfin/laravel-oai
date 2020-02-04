@@ -678,7 +678,7 @@
             <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:doc="http://www.lyncode.com/xoai" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
                <dc:title>Energia para Comunidades Rurales</dc:title>
                <dc:title>Energy for Rural Communities</dc:title>
-               <dc:title>偏遠社區的能源。</dc:title>
+               <dc:title>坝靠社址的能溝。</dc:title>
                <dc:creator>Neil Noble</dc:creator>
                <dc:contributor>Francisco Febrer</dc:contributor>
                <dc:contributor>Eneko Gomez-Acedo</dc:contributor>
@@ -1628,7 +1628,7 @@
          </header>
          <metadata>
             <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:doc="http://www.lyncode.com/xoai" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-               <dc:title>Reciclaje De Baterías De Plomo Ácido Usadas</dc:title>
+               <dc:title>Reciclaje De Baterías De Plomo Ýcido Usadas</dc:title>
                <dc:creator>Sophie van den Berg</dc:creator>
                <dc:contributor>Alicia Piñeiro</dc:contributor>
                <dc:contributor>Francisco Díez</dc:contributor>
@@ -1670,8 +1670,8 @@
          <metadata>
             <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:doc="http://www.lyncode.com/xoai" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
                <dc:title>Arma Su Propio Tippy Tap</dc:title>
-               <dc:title>अपना टीप टीप नल खुद बनाएँ</dc:title>
-               <dc:title>तुमचा टीप टीप नळ स्वतः बनवा</dc:title>
+               <dc:title>अपना टीप टीप नल खढ़द बनाझझ</dc:title>
+               <dc:title>तढ़मचा टीप टीप नळ सढ़वतः बनवा</dc:title>
                <dc:title>Construir Sua Própria Tippy Tap</dc:title>
                <dc:title>Build Your Own Tippy Tap</dc:title>
                <dc:title>Manuel de Construction d'un Tippy Tap</dc:title>

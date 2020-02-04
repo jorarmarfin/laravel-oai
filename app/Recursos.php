@@ -122,4 +122,16 @@ class Recursos extends Model
         }
         $this->attributes['Subject'] = $retVal;
     }
+    public function setFormatAttribute($value)
+    {
+        $data = [];
+        $tipos = ['PDF']
+        foreach (json_decode($value) as $key => $item) {
+            if (condition) {
+                # code...
+            }
+            $data[$key]= ['right'=>$value];
+        }
+        $this->attributes['Subject'] = $retVal;
+    }
 }

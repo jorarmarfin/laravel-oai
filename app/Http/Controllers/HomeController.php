@@ -55,9 +55,23 @@ class HomeController extends Controller
         $sembrar = $this->Sembrar($data);
         return $sembrar;
     }
-    public function cosecha($cantidad)
+    public function cosecha($cantidad,$tipo='all')
     {
-        $this->Cosechar($cantidad);
+        $this->Cosechar($cantidad,$tipo);
         echo 'Listo';
+    }
+    public function Diario($fecha=null)
+    {
+        if (isset($fecha)) {
+            $this->Cosechar($fecha,'f');
+            //$this->sembrando();
+            echo 'Procesado';
+        } else {
+            $fecha = date('Y-m-d');
+            $this->Cosechar($fecha,'f');
+            //$this->sembrando();
+            echo 'Procesado';
+
+        }
     }
 }

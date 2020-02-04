@@ -6,6 +6,7 @@ use App\Recursos;
 use Carbon\Carbon;
 use App\RecursosDetalles;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client as GuzzleClient;
 use Orchestra\Parser\Xml\Facade as XmlParser;
 /**
@@ -22,16 +23,18 @@ trait DSpace
         $this->client = new GuzzleClient();
         $this->portal = env("PORTAL_URL");
     }
-    public function Cosechar($cantidad)
+    public function Cosechar($cantidad,$tipo)
     {
 
-        $urls = $this->UrlDSpaceOAI($cantidad);
+        $urls = $this->UrlDSpaceOAI($cantidad,$tipo);
         foreach ($urls['maestro'] as $key => $url) {
+            if ($key==0)DB::table('recursos')->truncate();
             $xmlObj = simplexml_load_file($url);
             $xmlNode = $xmlObj->ListRecords;
             $this->InsertarData($xmlNode,'m');
         }
         foreach ($urls['detalle'] as $key => $url) {
+            if ($key==0)DB::table('recursos_detalles')->truncate();
             $xmlObj = simplexml_load_file($url);
             $xmlNode = $xmlObj->ListRecords;
             $this->InsertarData($xmlNode,'d');
@@ -106,7 +109,7 @@ trait DSpace
                     'identifier'=>$identifier,
                     'language'=>$data->language[0],
                     'rights'=>json_encode($data->rights),
-                    'format'=>$data->format[2],
+                    'format'=>json_encode($data->format),
                     'publisher'=>$data->publisher[0],
                     'created_at'=>$now,
                     'updated_at'=>$now,
@@ -115,6 +118,7 @@ trait DSpace
             }
         
         } else {
+            DB::table('recursos_detalles')->truncate();
             foreach ($data->record as $key => $node) {
                 $data = $node->metadata->children('atom', 1)->entry->children('atom', 1);
                 $titulo = ($data->title[1]=='') ? $data->title[0] : $data->title[1] ;
@@ -174,9 +178,13 @@ trait DSpace
         $status = $response->getStatusCode();
         return $status;
     }
-    public function UrlDSpaceOAI($cantidad)
+    public function UrlDSpaceOAI($cantidad,$tipo)
     {
-        $ciclos = intval($cantidad/100);
+        if ($tipo=='all') {
+            $ciclos = intval($cantidad/100);
+        } else {
+            $ciclos = 0;
+        }
         $cont = 0;
         $url            = env("DSPACE_URL");
         $verb           = 'ListRecords';
@@ -185,11 +193,17 @@ trait DSpace
         $set            = 'com_11283_';
         $comunidad      = $set.'320273';
         $urls = []; $ore = [];
-        for ($i=0; $i <= $ciclos; $i++) { 
-            $urls[$i] = "{$url}oai/request?verb={$verb}&resumptionToken={$metadataPrefix}///{$comunidad}/{$cont}";
-            $ore[$i] = "{$url}oai/request?verb={$verb}&resumptionToken={$metadataPrefix2}///{$comunidad}/{$cont}";
-            $cont +=100;
+        for ($i=0; $i <= $ciclos; $i++) {
+            if ($tipo=='all') {
+                $urls[$i] = "{$url}oai/request?verb={$verb}&resumptionToken={$metadataPrefix}///{$comunidad}/{$cont}";
+                $ore[$i] = "{$url}oai/request?verb={$verb}&resumptionToken={$metadataPrefix2}///{$comunidad}/{$cont}";
+                $cont +=100;
+            } else {
+                $urls[$i] = "{$url}oai/request?verb={$verb}&metadataPrefix={$metadataPrefix}&from={$cantidad}&until={$cantidad}&set={$comunidad}";
+                $ore[$i] = "{$url}oai/request?verb={$verb}&metadataPrefix={$metadataPrefix2}&from={$cantidad}&until={$cantidad}&set={$comunidad}";
+            }
         }
+
         return [
             'maestro' => $urls,
             'detalle' => $ore,

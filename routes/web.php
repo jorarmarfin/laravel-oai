@@ -6,3 +6,4 @@ Route::get('/', function () {
 
 Route::get('sembrar-dspace/{id}','HomeController@sembrando');
 Route::get('cosecha-dspace/{cantidad}','HomeController@cosecha');
+Route::get('diario','HomeController@diario');
