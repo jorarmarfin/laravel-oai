@@ -29,7 +29,9 @@ class CreateRecursosTable extends Migration
             $table->json('rights')->nullable();
             $table->string('format')->nullable();
             $table->string('publisher')->nullable();
+            $table->string('relation')->nullable();
             $table->boolean('procesar')->nullable();
+            $table->json('test')->nullable();
             $table->timestamps();
         });
     }
