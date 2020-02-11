@@ -28,7 +28,6 @@ class HomeController extends Controller
                 'dspace_asset_oai_identifier'=> $recurso->identifier,
                 'dspace_asset_publisher'=> $recurso->publisher,
                 'dspace_asset_relation'=> $recurso->relation,
-                'dspace_asset_year'=> $recurso->year,
                 'dspace_asset_downloads'=>[
                     [
                     'name'=>$recurso->detalles->file_name,
@@ -53,6 +52,9 @@ class HomeController extends Controller
                 ],
                 'dspace_asset_language'=>[
                     ['tag'=>$recurso->language]
+                ],
+                'dspace_asset_year'=>[
+                    ['tag'=>$recurso->year]
                 ]
             ];
             $sembrar = $this->Sembrar($data);
