@@ -21,10 +21,14 @@ class Recursos extends Model
     public function getAutoresAttribute()
     {
         $data = [];
-        foreach (json_decode($this->contributor) as $key => $value) {
-            $data[$key]= ['name'=>$value];
+        if ($this->contributor!='""') {
+            foreach (json_decode($this->contributor) as $key => $value) {
+                $data[$key]= ['name'=>$value];
+            }
+            return $data;
+        }else{
+            return $this->contributor;
         }
-        return $data;
     }
     public function getColeccionesAttribute()
     {
@@ -125,14 +129,65 @@ class Recursos extends Model
     }
     public function setFormatAttribute($value)
     {
-        $formatos = ['PDF','Video'];
         foreach (json_decode($value) as $key => $item) {
-            $contains = Str::contains($item, $formatos);
-            if ($contains) {
-                $this->attributes['format'] = $item;
-            break;
+            if ($item == 'Article') {
+                $this->attributes['format'] = 'Artículo';
+                break;
+            }
+            if ($item == 'Book') {
+                $this->attributes['format'] = 'Libro';
+                break;
+            }
+            if ($item == 'Case Study') {
+                $this->attributes['format'] = 'Caso de estudio';
+                break;
+            }
+            if ($item == 'Fact Sheet') {
+                $this->attributes['format'] = 'Ficha técnica';
+                break;
+            }
+            if ($item == 'Infographic') {
+                $this->attributes['format'] = 'Infografía';
+                break;
+            }
+            if ($item == 'Manual') {
+                $this->attributes['format'] = 'Manual';
+                break;
+            }
+            if ($item == 'Technical Brief') {
+                $this->attributes['format'] = 'Ficha técnica';
+                break;
+            }
+            if ($item == 'Report') {
+                $this->attributes['format'] = 'Reporte';
+                break;
+            }
+            if ($item == 'Video') {
+                $this->attributes['format'] = 'Vídeo';
+                break;
+            }
+            if ($item == 'Policy Paper') {
+                $this->attributes['format'] = 'Documento de política';
+                break;
+            }
+            if ($item == 'Publicity Materials') {
+                $this->attributes['format'] = 'Materiales institucionales';
+                break;
+            }
+            if ($item == 'Magazine') {
+                $this->attributes['format'] = 'Revista';
+                break;
+            }
+            if ($item == 'Presentation') {
+                $this->attributes['format'] = 'Presentación';
+                break;
+            }
+            if ($item == 'Project') {
+                $this->attributes['format'] = 'Documento de proyecto';
+                break;
             }else{
-                $this->attributes['format'] = 'PDF';
+                $this->attributes['format'] = 'Otros';
+                break;
             }
         }
     }

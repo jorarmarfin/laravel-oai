@@ -12,48 +12,52 @@ class HomeController extends Controller
     public function sembrando($id=null)
     {
         if (isset($id)) {
-            $recursos = Recursos::where('id',$id)->first();
+            $recursos = Recursos::where('id',$id)->get();
         } else {
             $recursos = Recursos::where('procesar',1)->get();
         }
-        $data = [
-            'dspace_asset_title'=> $recursos->title,
-            'dspace_asset_status'=> "publish",
-            'dspace_asset_abstract'=> $recursos->description,
-            'dspace_asset_uri'=> $recursos->identifier,
-            'dspace_asset_authors'=> $recursos->autores,
-            'dspace_asset_issue_date'=> $recursos->fecha,
-            'dspace_asset_oai_identifier'=> $recursos->identifier,
-            'dspace_asset_publisher'=> $recursos->publisher,
-            'dspace_asset_downloads'=>[
-                [
-                'name'=>$recursos->detalles->file_name,
-                'image'=>$recursos->detalles->img,
-                'size'=>$recursos->detalles->file_size,
-                'mimetype'=>$recursos->format,
-                'description'=>$recursos->detalles->file_name,
-                'download'=>$recursos->detalles->file_link,
-                ]
-            ],
-            'dspace_asset_rights'=>$recursos->Derechos,
-            "dspace_asset_externallinks"=>[
-                ['link'=>$recursos->identifier]
-            ],
-            'dspace_asset_urls'=>[],
-            'dspace_asset_collections'=>$recursos->colecciones,
-            'dspace_asset_subjects'=>[
-                ['tag'=>$recursos->subject]
-            ],
-            'dspace_asset_format'=>[
-                ['tag'=>$recursos->format]
-            ],
-            'dspace_asset_language'=>[
-                ['tag'=>$recursos->language]
-            ]
-        ];
 
-        $sembrar = $this->Sembrar($data);
-        return $sembrar;
+        foreach ($recursos as $key => $recurso) {
+            $data = [
+                'dspace_asset_title'=> $recurso->title,
+                'dspace_asset_status'=> "publish",
+                'dspace_asset_abstract'=> $recurso->description,
+                'dspace_asset_uri'=> $recurso->identifier,
+                'dspace_asset_authors'=> $recurso->autores,
+                'dspace_asset_issue_date'=> $recurso->fecha,
+                'dspace_asset_oai_identifier'=> $recurso->identifier,
+                'dspace_asset_publisher'=> $recurso->publisher,
+                'dspace_asset_relation'=> $recurso->relation,
+                'dspace_asset_year'=> $recurso->year,
+                'dspace_asset_downloads'=>[
+                    [
+                    'name'=>$recurso->detalles->file_name,
+                    'image'=>$recurso->detalles->img,
+                    'size'=>$recurso->detalles->file_size,
+                    'mimetype'=>$recurso->format,
+                    'description'=>$recurso->detalles->file_name,
+                    'download'=>$recurso->detalles->file_link,
+                    ]
+                ],
+                'dspace_asset_rights'=>$recurso->Derechos,
+                "dspace_asset_externallinks"=>[
+                    ['link'=>$recurso->identifier]
+                ],
+                'dspace_asset_urls'=>[],
+                'dspace_asset_collections'=>$recurso->colecciones,
+                'dspace_asset_subjects'=>[
+                    ['tag'=>$recurso->subject]
+                ],
+                'dspace_asset_format'=>[
+                    ['tag'=>$recurso->format]
+                ],
+                'dspace_asset_language'=>[
+                    ['tag'=>$recurso->language]
+                ]
+            ];
+            $sembrar = $this->Sembrar($data);
+            echo 'Sembrado '.$key.'-'.$recurso->title."\n";
+        }
     }
     public function cosecha($cantidad,$tipo='all')
     {
