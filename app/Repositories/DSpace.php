@@ -98,6 +98,9 @@ trait DSpace
                         break;
                     } else {
                         $file = '';
+                        $file_link = '';
+                        $file_name = '';
+                        $file_size = 0;
                     }
                 }
                 foreach ($triples as $key => $item) {

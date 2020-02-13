@@ -23,7 +23,7 @@ class CreateRecursosTable extends Migration
             $table->string('subject')->nullable();
             $table->mediumText('description')->nullable();
             $table->date('date')->nullable();
-            $table->year('year')->nullable();
+            $table->string('year')->nullable();
             $table->string('identifier')->nullable();
             $table->string('language')->nullable();
             $table->json('rights')->nullable();

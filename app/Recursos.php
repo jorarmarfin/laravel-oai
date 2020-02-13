@@ -247,7 +247,21 @@ class Recursos extends Model
         $date = str_replace('Z','', $date);
         $carbon = Carbon::createFromFormat('Y-m-d H:i:s', $date)->toDateTimeString();
         $this->attributes['date'] = $carbon;
-        $this->attributes['year'] = substr($carbon,0,4);
+        $i = count($value)-1;
+        $year = (string)$value[$i];
+        $pos1 = strpos($year, '/');
+        if ($pos1>0) {
+            $year = explode('/',$year);
+            $year = end($year);
+        }
+        $pos2 = strpos($year, '-');
+        if ($pos2>0) {
+            $year = explode('-',$year);
+
+            $year = $year[0];
+        }
+
+        $this->attributes['year'] = $year;
     }
     public function setContributorAttribute($value)
     {
@@ -263,12 +277,12 @@ class Recursos extends Model
     public function setTitleAttribute($value)
     {
         $titulo = (array)json_decode($value);
-        $titulo = (array_key_exists('1', $titulo)) ? $titulo[1] : $titulo[0] ;
+        $titulo = $titulo[0] ;
         $this->attributes['title'] = $titulo;
     }
     public function ComCol($valor)
     {
-        $agricultura = ['320274','320565','320275','333479','320290','320291','320280','320292','313788','320276','320262','320277','320578','320586','313770','320587','320579','320580','320581','320582','320588','317695','317025'];
+        $agricultura = ['320274','320565','320275','333479','320290','320291','320280','320292','313788','320276','320262','320277','317695','317025'];
         $construccion = ['320281','320293','320557','320558','320559','320571','320560'];
         $desastres = ['320562','313768','320563','320575','320564'];
         $alimentos = ['320590','320585','320591','620314','320592','320606','320607','320593','320594','320608','320595','320596','320597','320598'];
@@ -276,6 +290,9 @@ class Recursos extends Model
         $industrias = ['320602','620316','320603','320604','320610','320605','320612'];
         $residuos = ['320630','320631','320620','620318'];
         $agua = ['320632','320633','320635','620319','320622','320623','320638'];
+        $ambiente = ['320583'];
+        $desarrollo = ['320640','320643'];
+        $energia = ['320565','320578','320586','313770','320587','320579','320580','320581','320582','320588'];
 
         if (Str::contains($valor, $agricultura)) {
             $translate = 'Agricultura y bosques';
@@ -288,11 +305,17 @@ class Recursos extends Model
         }elseif (Str::contains($valor, $ganaderia)) {
             $translate = 'Ganadería';
         }elseif (Str::contains($valor, $industrias)) {
-            $translate = 'Industrias de Manufactura, Artesanía y Procesos';
+            $translate = 'Artesanía y textiles';
         }elseif (Str::contains($valor, $residuos)) {
             $translate = 'Gestión de residuos';
         }elseif (Str::contains($valor, $agua)) {
             $translate = 'Agua y saneamiento';
+        }elseif (Str::contains($valor, $ambiente)) {
+            $translate = 'Medio ambiente y cambio climático';
+        }elseif (Str::contains($valor, $desarrollo)) {
+            $translate = 'Desarrollo económico y social';
+        }elseif (Str::contains($valor, $energia)) {
+            $translate = 'Energía';
         } else {
             $translate = false;
         }
