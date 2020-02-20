@@ -29,7 +29,7 @@ trait DSpace
         $urls = $this->UrlDSpaceOAI($cantidad,$tipo);
         foreach ($urls['maestro'] as $key => $url) {
             if ($key==0)DB::table('recursos')->truncate();
-            $url = $this->curl_get_contents($urls);
+            // $url = $this->curl_get_contents($url);
             $xmlObj = simplexml_load_file($url);
             if ((string)$xmlObj->error=='No matches for the query') {
                 echo 'No matches for the query :'.$url."\n";
@@ -37,7 +37,6 @@ trait DSpace
                 $xmlNode = $xmlObj->ListRecords;
                 $this->InsertarData($xmlNode,'m');
             }
-            
         }
         foreach ($urls['detalle'] as $key => $url) {
             if ($key==0)DB::table('recursos_detalles')->truncate();
@@ -165,7 +164,6 @@ trait DSpace
                 $ore[$i] = "{$url}oai/request?verb={$verb}&metadataPrefix={$metadataPrefix2}&from={$cantidad}&until={$cantidad}&set={$comunidad}";
             }
         }
-        //dd($urls);
         return [
             'maestro' => $urls,
             'detalle' => $ore,
