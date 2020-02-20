@@ -29,6 +29,7 @@ trait DSpace
         $urls = $this->UrlDSpaceOAI($cantidad,$tipo);
         foreach ($urls['maestro'] as $key => $url) {
             if ($key==0)DB::table('recursos')->truncate();
+            $url = $this->curl_get_contents($urls);
             $xmlObj = simplexml_load_file($url);
             if ((string)$xmlObj->error=='No matches for the query') {
                 echo 'No matches for the query :'.$url."\n";
@@ -169,6 +170,17 @@ trait DSpace
             'maestro' => $urls,
             'detalle' => $ore,
         ];
+    }
+    function curl_get_contents($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+        $html = curl_exec($ch);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
     }
 
 }
