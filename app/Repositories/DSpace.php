@@ -29,8 +29,7 @@ trait DSpace
         $urls = $this->UrlDSpaceOAI($cantidad,$tipo);
         foreach ($urls['maestro'] as $key => $url) {
             if ($key==0)DB::table('recursos')->truncate();
-            $url = $this->curl_get_contents($url);
-            $xmlObj = simplexml_load_string($url);
+            $xmlObj = simplexml_load_file($url);
             if ((string)$xmlObj->error=='No matches for the query') {
                 echo 'No matches for the query :'.$url."\n";
             } else {
@@ -79,7 +78,7 @@ trait DSpace
                     'updated_at'=>$now,
                     ]);
             }
-        
+
         } else {
             foreach ($data->record as $key => $node) {
                 $data = $node->metadata->children('atom', 1)->entry->children('atom', 1);
@@ -153,6 +152,8 @@ trait DSpace
         $metadataPrefix2 = 'ore';
         $set            = 'com_11283_';
         $comunidad      = $set.'320273';
+        $hasta = strtotime ( '+1 day' , strtotime ( $cantidad ) ) ;
+        $hasta = date ( 'Y-m-d' , $hasta );
         $urls = []; $ore = [];
         for ($i=0; $i <= $ciclos; $i++) {
             if ($tipo=='all') {
@@ -160,25 +161,14 @@ trait DSpace
                 $ore[$i] = "{$url}oai/request?verb={$verb}&resumptionToken={$metadataPrefix2}///{$comunidad}/{$cont}";
                 $cont +=100;
             } else {
-                $urls[$i] = "{$url}oai/request?verb={$verb}&metadataPrefix={$metadataPrefix}&from={$cantidad}&until={$cantidad}&set={$comunidad}";
-                $ore[$i] = "{$url}oai/request?verb={$verb}&metadataPrefix={$metadataPrefix2}&from={$cantidad}&until={$cantidad}&set={$comunidad}";
+                $urls[$i] = "{$url}oai/request?verb={$verb}&metadataPrefix={$metadataPrefix}&from={$cantidad}&until={$hasta}&set={$comunidad}";
+                $ore[$i] = "{$url}oai/request?verb={$verb}&metadataPrefix={$metadataPrefix2}&from={$cantidad}&until={$hasta}&set={$comunidad}";
             }
         }
         return [
             'maestro' => $urls,
             'detalle' => $ore,
         ];
-    }
-    function curl_get_contents($url)
-    {
-        $context = stream_context_create(
-            array(
-                "http" => array(
-                    "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-                )
-            )
-        );
-        return file_get_contents($url,false, $context);
     }
 
 }
