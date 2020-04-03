@@ -57,6 +57,7 @@ trait DSpace
                 $data = $node->metadata->children('oai_dc', 1)->dc->children('dc', 1);
                 $setSpec = $node->header->setSpec;
 
+
                 #Variables
                 $now = new Carbon();
                 Recursos::create([
