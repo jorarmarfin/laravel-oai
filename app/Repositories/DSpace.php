@@ -60,7 +60,7 @@ trait DSpace
                 #Variables
                 $now = new Carbon();
                 Recursos::create([
-                    'title'=>json_encode($data->title),
+                    'title'=>json_encode(substr($data->title,0,255)),
                     'dspace_id'=>$node->header->identifier,
                     'contributor'=>$data,
                     'communities'=>json_encode($setSpec),
