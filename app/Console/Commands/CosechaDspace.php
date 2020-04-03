@@ -41,6 +41,6 @@ class CosechaDspace extends Command
      */
     public function handle()
     {
-        if ($this->option('p')) $this->homecontroller->cosecha($this->option('p'),1);
+        if ($this->option('p')) $this->homecontroller->cosecha($this->option('p'),'all');
     }
 }
