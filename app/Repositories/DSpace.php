@@ -117,7 +117,7 @@ trait DSpace
                 $peso = $file_size/1048576;
                 $peso = round($peso,2);
                 RecursosDetalles::create([
-                    'title'=>json_encode($data->title),
+                    'title'=>json_encode(substr($data->title,0,255)),
                     'dspace_id'=>$node->header->identifier,
                     'file_name'=>$file_name,
                     'file_link'=>$file_link,
